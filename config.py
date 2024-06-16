@@ -4,5 +4,5 @@ PASSPHRASE = 'your_passphrase_here'  # Замени 'your_passphrase_here' на 
 
 MAX_FEE_MEME_GAS = 160
 
-AMOUNT = [7000, 1000]
+AMOUNT = [7000, 10000]
 DELAY = [900, 12300]
