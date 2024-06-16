@@ -26,7 +26,8 @@ token_code = 'MEME'
 network = 'ERC20'
 
 def control_fee():
-    while True:
+    max_attempts = 10  # Максимальное количество попыток
+    for attempt in range(max_attempts):
         try:
             logger.info("Fetching withdraw fees...")
             fees = exchange.fetch_deposit_withdraw_fees([token_code])
@@ -48,10 +49,13 @@ def control_fee():
 
         except Exception as e:
             logger.error(f'Cant get current fee, error: {e}')
+            time.sleep(20)  # Добавляем задержку перед следующей попыткой
             continue
 
         logger.info('Sleep 120 sec...')
         time.sleep(120)
+    
+    raise Exception("Max attempts to fetch fee exceeded.")
 
 if __name__ == '__main__':
     exchange = ccxt.okx({
@@ -67,24 +71,26 @@ if __name__ == '__main__':
 
     for address in wallet_addresses:
         while True:
-            logger.info(f"Processing wallet address: {address}")
-            fee = control_fee()
-            logger.info(f"Control fee returned: {fee}")
-
-            # Ensure the net amount is within the defined range
-            net_amount = random.uniform(*config.AMOUNT)
-
             try:
-                logger.info(f" {address} | Try to withdraw {net_amount} ${token_code}...")
-                response = exchange.withdraw(token_code, net_amount, address, params={
+                logger.info(f"Processing wallet address: {address}")
+                fee = control_fee()
+                logger.info(f"Control fee returned: {fee}")
+
+                # Ensure the total amount with fee is within the defined range
+                net_amount = random.uniform(*config.AMOUNT)
+                total_amount = round(net_amount + fee, 2)
+
+                logger.info(f" {address} | Try to withdraw {total_amount} ${token_code}...")
+                response = exchange.withdraw(token_code, total_amount, address, params={
                     'network': network,
                 })
+                logger.info(f"Withdrawal response: successfully withdrawing {response['amount']} ${token_code}")
 
                 withdrawal_id = response.get('id', None)
 
                 if withdrawal_id:
-                    logger.success(f" {address} | Successfully withdrew {net_amount} ${token_code} [ID: {withdrawal_id}]")
-                    break
+                    logger.success(f" {address} | Success withdraw [ID: {withdrawal_id}]")
+                    break  # Выход из внутреннего цикла while после успешного вывода
                 else:
                     logger.error(f" {address} | Withdrawal failed, no ID returned")
 
@@ -105,11 +111,14 @@ if __name__ == '__main__':
 
                 elif "Insufficient balance" in error_message:
                     logger.error(f" {address} | Insufficient balance, retrying...")
+                    time.sleep(20)  # Добавляем задержку перед повторной попыткой
+                    continue
 
                 else:
                     logger.error(f" {address} | Unexpected error: {error}")
-                    break
-
+                    time.sleep(20)  # Добавляем задержку перед повторной попыткой
+                    continue
+        
         delay = random.randint(*config.DELAY)
         logger.info(f"Waiting for {delay} seconds before processing the next address...")
         time.sleep(delay)
