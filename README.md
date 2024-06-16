@@ -14,8 +14,9 @@
 ## Файл конфигурации `Config.py`
 `API_KEY`          = "ваш API KEY"  
 `API_SECRET`       = "ваш API SECRET"  
+`PASSPHRASE`       = "ваш API пароль OKX"
 `MAX_FEE_MEME_GAS` = "максимальная сумма комиссии в $MEME"  
-`AMOUNT`           = "сумма вывода без учета комиссии (минимум 69)"  
+`AMOUNT`           = "сумма вывода без учета комиссии"  
 `DELAY`            = "задержка между аккаунтами"  
 
 
@@ -33,6 +34,7 @@ The software waits for a certain commission level in $MEME (which can be set in 
 ## Configuration File `Config.py`
 `API_KEY` = "your API KEY"  
 `API_SECRET` = "your API SECRET"  
+`PASSPHRASE`  = "your API password from OKX"
 `MAX_FEE_MEME_GAS` = "maximum commission amount in $MEME"  
 `AMOUNT` = "withdrawal amount excluding commission (minimum 69)"  
 `DELAY` = "delay between accounts"  
