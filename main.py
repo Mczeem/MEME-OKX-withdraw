@@ -80,6 +80,11 @@ if __name__ == '__main__':
                 net_amount = random.uniform(*config.AMOUNT)
                 total_amount = round(net_amount + fee, 2)
 
+                # Если итоговая сумма превышает верхний предел, корректируем net_amount
+                while total_amount > config.AMOUNT[1]:
+                    net_amount = random.uniform(*config.AMOUNT)
+                    total_amount = round(net_amount + fee, 2)
+
                 logger.info(f" {address} | Try to withdraw {total_amount} ${token_code}...")
                 response = exchange.withdraw(token_code, total_amount, address, params={
                     'network': network,
@@ -124,3 +129,4 @@ if __name__ == '__main__':
         time.sleep(delay)
 
     logger.success("All tasks done!")
+
