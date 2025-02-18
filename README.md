@@ -36,5 +36,5 @@ The software waits for a certain commission level in $MEME (which can be set in 
 `API_SECRET` = "your API SECRET"  
 `PASSPHRASE`  = "your API password from OKX"
 `MAX_FEE_MEME_GAS` = "maximum commission amount in $MEME"  
-`AMOUNT` = "withdrawal amount excluding commission (minimum 69)"  
+`AMOUNT` = "withdrawal amount excluding commission"  
 `DELAY` = "delay between accounts"  
